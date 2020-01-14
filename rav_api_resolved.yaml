@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  title: RAV API
+  description: RAV API
+  contact:
+    email: cntogkas@wings-ict-solutions.eu
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0-oas3
+servers:
+- url: https://virtserver.swaggerhub.com/myRAVorg/RAV_latest/1.0.0
+tags:
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /configuration:
+    get:
+      tags:
+      - developers
+      summary: current configuration
+      description: |
+        Returns the current configuration of the RAV module
+      operationId: getConfiguration
+      responses:
+        "200":
+          description: SUCCESS,
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+    post:
+      tags:
+      - developers
+      summary: adds an inventory item
+      description: Sets a new configuration on the RAV module
+      operationId: setConfiguration
+      requestBody:
+        description: New configuration for the module
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/configuration'
+        required: true
+      responses:
+        "200":
+          description: configuration received
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/configuration'
+        "400":
+          description: malformed JSON content
+        "401":
+          description: unsupported request
+  /command:
+    get:
+      tags:
+      - developers
+      summary: command history
+      description: |
+        Returns the command history RAV module
+      operationId: getCommand
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commandHistory'
+    post:
+      tags:
+      - developers
+      summary: new command
+      description: Executes a new command
+      operationId: setCommand
+      requestBody:
+        description: Executes new command
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newCommand'
+        required: true
+      responses:
+        "200":
+          description: command received'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/receivedCommand'
+        "400":
+          description: malformed JSON content
+        "401":
+          description: unsupported request
+  /report_dump:
+    get:
+      tags:
+      - developers
+      summary: dump results
+      description: |
+        Returns the validation results in JSON format
+      operationId: getResultsCommand
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validationResults'
+components:
+  schemas:
+    configuration:
+      required:
+      - publish
+      - topics
+      type: object
+      properties:
+        topics:
+          type: array
+          items:
+            $ref: '#/components/schemas/topic'
+        publish:
+          type: array
+          items:
+            $ref: '#/components/schemas/publishtopic'
+    commandHistory:
+      type: object
+      properties:
+        command_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/commandInstance'
+    newCommand:
+      required:
+      - command
+      type: object
+      properties:
+        command:
+          type: string
+          example: start / stop
+    receivedCommand:
+      required:
+      - received_command
+      - status
+      type: object
+      properties:
+        received_command:
+          type: string
+          example: start / stop
+        status:
+          type: string
+          example: executing / unsupported / error
+    topic:
+      required:
+      - brokerAddr
+      - kpi
+      - name
+      type: object
+      properties:
+        brokerAddr:
+          type: string
+          example: 127.0.0.1:9092
+        name:
+          type: string
+          example: /app/network_kpi_1
+        kpi:
+          type: string
+          example: related_kpi_or_category
+        analysis:
+          type: string
+          example: default
+        conditions:
+          $ref: '#/components/schemas/topic_conditions'
+    publishtopic:
+      required:
+      - brokerAddr
+      - kpi
+      - name
+      type: object
+      properties:
+        brokerAddr:
+          type: string
+          example: 127.0.0.1:9092
+        name:
+          type: string
+          example: /app/vertical_kpi_1
+        kpi:
+          type: string
+          example: related_kpi_or_category
+    commandInstance:
+      type: object
+      properties:
+        timestamp:
+          type: number
+          example: 1578563340.3533046
+        command:
+          type: string
+          example: start / stop
+        status:
+          type: string
+          example: executing / not implemented yet / error
+    validationResults:
+      type: object
+      properties:
+        information:
+          type: string
+          example: Monday January 13, 2020
+        additional_information:
+          type: string
+          example: 'UC#1: Example'
+        validation_results:
+          type: array
+          items:
+            $ref: '#/components/schemas/validationResultsInstance'
+    validationResultsInstance:
+      type: object
+      properties:
+        index:
+          type: number
+          example: 1
+        messages:
+          type: array
+          items:
+            type: string
+            example: typical message format
+        number_of_messages:
+          type: number
+          example: 128
+        topic:
+          type: string
+          example: /app/vertical_kpi_1
+    topic_conditions:
+      type: object
+      properties:
+        condition_1:
+          type: string
+          example: gte/gt/lte/lt/eq/neq/None
+        condition_2:
+          type: string
+          example: gte/gt/lte/lt/eq/neq/None
+        value_1:
+          type: number
+        value_2:
+          type: number
