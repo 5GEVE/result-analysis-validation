@@ -157,6 +157,7 @@ components:
         - brokerAddr
         - name
         - kpi
+        - publish_to
       properties:
         brokerAddr:
           type: string
@@ -170,15 +171,18 @@ components:
         analysis:
           type: string
           example: default
+        publish_to:
+          type: string
+          example: /app/network_kpi_1_avg
         conditions:
           type: object
           properties:
             condition_1:
               type: string
-              example: gte/gt/lte/lt/eq/neq/None
+              example: gte/gt/lte/lt/eq/neq/null
             condition_2:
               type: string
-              example: gte/gt/lte/lt/eq/neq/None
+              example: gte/gt/lte/lt/eq/neq/null
             value_1:
               type: number
             value_2:
