@@ -1,29 +1,27 @@
 openapi: 3.0.0
 info:
-  title: RAV API
   description: RAV API
+  version: "1.0.0-oas3"
+  title: RAV API
   contact:
     email: cntogkas@wings-ict-solutions.eu
   license:
     name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 1.0.0-oas3
-servers:
-- url: https://virtserver.swaggerhub.com/myRAVorg/RAV_latest/1.0.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
-- name: developers
-  description: Operations available to regular developers
+  - name: developers
+    description: Operations available to regular developers
 paths:
   /configuration:
     get:
       tags:
-      - developers
+        - developers
       summary: current configuration
+      operationId: getConfiguration
       description: |
         Returns the current configuration of the RAV module
-      operationId: getConfiguration
       responses:
-        "200":
+        '200':
           description: SUCCESS,
           content:
             application/json:
@@ -31,38 +29,38 @@ paths:
                 $ref: '#/components/schemas/configuration'
     post:
       tags:
-      - developers
+        - developers
       summary: adds an inventory item
-      description: Sets a new configuration on the RAV module
       operationId: setConfiguration
-      requestBody:
-        description: New configuration for the module
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/configuration'
-        required: true
+      description: Sets a new configuration on the RAV module
       responses:
-        "200":
+        '200':
           description: configuration received
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/configuration'
-        "400":
+        '400':
           description: malformed JSON content
-        "401":
+        '401':
           description: unsupported request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/configuration'
+        description: New configuration for the module
   /command:
     get:
       tags:
-      - developers
+        - developers
       summary: command history
+      operationId: getCommand
       description: |
         Returns the command history RAV module
-      operationId: getCommand
       responses:
-        "200":
+        '200':
           description: SUCCESS
           content:
             application/json:
@@ -70,50 +68,53 @@ paths:
                 $ref: '#/components/schemas/commandHistory'
     post:
       tags:
-      - developers
+        - developers
       summary: new command
-      description: Executes a new command
       operationId: setCommand
+      description: Executes a new command
       requestBody:
-        description: Executes new command
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/newCommand'
-        required: true
+        description: Executes new command
       responses:
-        "200":
+        '200':
           description: command received'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/receivedCommand'
-        "400":
+        '400':
           description: malformed JSON content
-        "401":
+        '401':
           description: unsupported request
   /report_dump:
     get:
       tags:
-      - developers
+        - developers
       summary: dump results
+      operationId: getResultsCommand
       description: |
         Returns the validation results in JSON format
-      operationId: getResultsCommand
       responses:
-        "200":
+        '200':
           description: SUCCESS
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/validationResults'
+    
+servers:
+  - url: 'https://virtserver.swaggerhub.com/myRAVorg/RAV_latest/1.0.0'
 components:
   schemas:
     configuration:
-      required:
-      - publish
-      - topics
       type: object
+      required:
+        - topics
+        - publish
       properties:
         topics:
           type: array
@@ -131,18 +132,18 @@ components:
           items:
             $ref: '#/components/schemas/commandInstance'
     newCommand:
-      required:
-      - command
       type: object
+      required:
+        - command
       properties:
         command:
           type: string
           example: start / stop
     receivedCommand:
-      required:
+      type: object
+      required: 
       - received_command
       - status
-      type: object
       properties:
         received_command:
           type: string
@@ -151,16 +152,15 @@ components:
           type: string
           example: executing / unsupported / error
     topic:
-      required:
-      - brokerAddr
-      - kpi
-      - name
-      - publish_to
       type: object
+      required:
+        - brokerAddr
+        - name
+        - kpi
       properties:
         brokerAddr:
           type: string
-          example: 127.0.0.1:9092
+          example: '127.0.0.1:9092'
         name:
           type: string
           example: /app/network_kpi_1
@@ -172,25 +172,60 @@ components:
           example: default
         publish_to:
           type: string
-          example: /app/network_kpi_1_avg
+          example: /app/output_simple_kpi_1
         conditions:
-          $ref: '#/components/schemas/topic_conditions'
+          type: object
+          properties:
+            condition_1:
+              type: string
+              example: gte/gt/lte/lt/eq/neq/None
+            condition_2:
+              type: string
+              example: gte/gt/lte/lt/eq/neq/None
+            value_1:
+              type: number
+            value_2:
+              type: number
     publishtopic:
-      required:
-      - brokerAddr
-      - kpi
-      - name
       type: object
+      required:
+        - brokerAddr
+        - name
+        - kpi
+        - type
       properties:
         brokerAddr:
           type: string
-          example: 127.0.0.1:9092
+          example: '127.0.0.1:9092'
         name:
           type: string
           example: /app/vertical_kpi_1
         kpi:
           type: string
           example: related_kpi_or_category
+        type:
+          type: string
+          example: simple
+        formula:
+          type: string
+          example: id_of_formula
+        input:
+          type: array
+          items:
+            type: string
+        conditions:
+          type: object
+          properties:
+            condition_1:
+              type: string
+              example: gte/gt/lte/lt/eq/neq/None
+            condition_2:
+              type: string
+              example: gte/gt/lte/lt/eq/neq/None
+            value_1:
+              type: number
+            value_2:
+              type: number
     commandInstance:
       type: object
       properties:
@@ -208,7 +243,7 @@ components:
       properties:
         information:
           type: string
-          example: Monday January 13, 2020
+          example: 'Monday January 13, 2020'
         additional_information:
           type: string
           example: 'UC#1: Example'
@@ -226,26 +261,13 @@ components:
           type: array
           items:
             type: string
-            example: typical message format
+            example: 'typical message format'
         number_of_messages:
           type: number
           example: 128
         topic:
           type: string
-          example: /app/vertical_kpi_1
+          example: '/app/vertical_kpi_1'
         validation:
           type: boolean
           example: true
-    topic_conditions:
-      type: object
-      properties:
-        condition_1:
-          type: string
-          example: gte/gt/lte/lt/eq/neq/null
-        condition_2:
-          type: string
-          example: gte/gt/lte/lt/eq/neq/null
-        value_1:
-          type: number
-        value_2:
-          type: number
