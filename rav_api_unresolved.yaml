@@ -4,7 +4,7 @@ info:
   version: "1.0.0-oas3"
   title: RAV API
   contact:
-    email: cntogkas@wings-ict-solutions.eu
+    email: name@mail.com
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
@@ -156,76 +156,36 @@ components:
       required:
         - brokerAddr
         - name
-        - kpi
+        - metric
       properties:
         brokerAddr:
           type: string
           example: '127.0.0.1:9092'
         name:
           type: string
-          example: /app/network_kpi_1
-        kpi:
+          example: metric_1_topic
+        metric:
           type: string
-          example: related_kpi_or_category
-        analysis:
+          example: metric_1_name
+        type:
           type: string
-          example: default
-        publish_to:
-          type: string
-          example: /app/output_simple_kpi_1
-        conditions:
-          type: object
-          properties:
-            condition_1:
-              type: string
-              example: gte/gt/lte/lt/eq/neq/None
-            condition_2:
-              type: string
-              example: gte/gt/lte/lt/eq/neq/None
-            value_1:
-              type: number
-            value_2:
-              type: number
+          example: infrastructure/application
     publishtopic:
       type: object
       required:
         - brokerAddr
         - name
         - kpi
-        - type
       properties:
         brokerAddr:
           type: string
           example: '127.0.0.1:9092'
         name:
           type: string
-          example: /app/vertical_kpi_1
+          example: output_kpi_1_topic
         kpi:
           type: string
-          example: related_kpi_or_category
-        type:
-          type: string
-          example: simple
-        formula:
-          type: string
-          example: id_of_formula
-        input:
-          type: array
-          items:
-            type: string
-        conditions:
-          type: object
-          properties:
-            condition_1:
-              type: string
-              example: gte/gt/lte/lt/eq/neq/None
-            condition_2:
-              type: string
-              example: gte/gt/lte/lt/eq/neq/None
-            value_1:
-              type: number
-            value_2:
-              type: number
+          example: output_kpi_1_name
     commandInstance:
       type: object
       properties:
