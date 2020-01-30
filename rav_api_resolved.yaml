@@ -226,6 +226,12 @@ components:
           example: effect of latency on deviation
         configuration:
           $ref: '#/components/schemas/configuration'
+        steps:
+          type: number
+          example: 2
+        status:
+          type: string
+          example: finished
         validation:
           type: array
           items:
