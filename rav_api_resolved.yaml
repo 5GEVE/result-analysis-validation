@@ -14,14 +14,24 @@ tags:
 - name: developers
   description: Operations available to regular developers
 paths:
-  /configuration:
+  /configuration/{expID}:
     get:
       tags:
       - developers
-      summary: current configuration
+      summary: get the configuration for an experiment
       description: |
         Returns the current configuration of the RAV module
-      operationId: getConfiguration
+      operationId: getConfigurationExp
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
           description: SUCCESS,
@@ -32,9 +42,19 @@ paths:
     post:
       tags:
       - developers
-      summary: adds an inventory item
+      summary: adds configuration for an experiment
       description: Sets a new configuration on the RAV module
-      operationId: setConfiguration
+      operationId: setConfigurationExp
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
         description: New configuration for the module
         content:
@@ -53,52 +73,13 @@ paths:
           description: malformed JSON content
         "401":
           description: unsupported request
-  /command:
+  /queue:
     get:
       tags:
       - developers
-      summary: command history
+      summary: dump list of active RAV instances
       description: |
-        Returns the command history RAV module
-      operationId: getCommand
-      responses:
-        "200":
-          description: SUCCESS
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/commandHistory'
-    post:
-      tags:
-      - developers
-      summary: new command
-      description: Executes a new command
-      operationId: setCommand
-      requestBody:
-        description: Executes new command
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/newCommand'
-        required: true
-      responses:
-        "200":
-          description: command received'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/receivedCommand'
-        "400":
-          description: malformed JSON content
-        "401":
-          description: unsupported request
-  /report_dump:
-    get:
-      tags:
-      - developers
-      summary: dump results
-      description: |
-        Returns the validation results in JSON format
+        Returns the list of all the rav instances
       operationId: getResultsCommand
       responses:
         "200":
@@ -106,7 +87,82 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/validationResults'
+                $ref: '#/components/schemas/validationResultsList'
+  /queue/{expID}:
+    get:
+      tags:
+      - developers
+      summary: dump results for specific experiment
+      description: |
+        Returns the results of the specific experiment
+      operationId: getExpResults
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validationResultsInstance'
+  /terminate/{expID}:
+    get:
+      tags:
+      - developers
+      summary: terminate current step of experiment
+      description: |
+        Terminates the current step of the experiment
+      operationId: terminateCurrentStep
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commandResponse'
+  /step/{expID}:
+    get:
+      tags:
+      - developers
+      summary: add step to experiment
+      description: |
+        Adds additional step to experiment
+      operationId: addStepToExp
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commandResponse'
 components:
   schemas:
     configuration:
@@ -123,33 +179,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/publishtopic'
-    commandHistory:
-      type: object
-      properties:
-        command_history:
-          type: array
-          items:
-            $ref: '#/components/schemas/commandInstance'
-    newCommand:
-      required:
-      - command
-      type: object
-      properties:
-        command:
-          type: string
-          example: start / stop
-    receivedCommand:
-      required:
-      - received_command
-      - status
-      type: object
-      properties:
-        received_command:
-          type: string
-          example: start / stop
-        status:
-          type: string
-          example: executing / unsupported / error
     topic:
       required:
       - brokerAddr
@@ -182,48 +211,34 @@ components:
         kpi:
           type: string
           example: output_kpi_1_name
-    commandInstance:
-      type: object
-      properties:
-        timestamp:
-          type: number
-          example: 1578563340.3533046
-        command:
-          type: string
-          example: start / stop
-        status:
-          type: string
-          example: executing / not implemented yet / error
-    validationResults:
-      type: object
-      properties:
-        information:
-          type: string
-          example: Monday January 13, 2020
-        additional_information:
-          type: string
-          example: 'UC#1: Example'
-        validation_results:
-          type: array
-          items:
-            $ref: '#/components/schemas/validationResultsInstance'
+    validationResultsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/validationResultsInstance'
     validationResultsInstance:
       type: object
       properties:
-        index:
-          type: number
-          example: 1
-        messages:
+        expID:
+          type: string
+          example: 123af1rcxhauq13-13r142f1-13f13f-121e
+        tcID:
+          type: string
+          example: effect of latency on deviation
+        configuration:
+          $ref: '#/components/schemas/configuration'
+        validation:
           type: array
           items:
-            type: string
-            example: typical message format
-        number_of_messages:
-          type: number
-          example: 128
-        topic:
+            $ref: '#/components/schemas/validationResults'
+    validationResults:
+      type: object
+      additionalProperties: true
+    commandResponse:
+      type: object
+      properties:
+        expID:
           type: string
-          example: /app/vertical_kpi_1
-        validation:
-          type: boolean
-          example: true
+          example: 123af1rcxhauq13-13r142f1-13f13f-121e
+        status:
+          type: string
+          example: running
