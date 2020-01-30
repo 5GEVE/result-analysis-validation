@@ -154,32 +154,29 @@ components:
       required:
       - brokerAddr
       - metric
-      - name
+      - topic
       type: object
       properties:
         brokerAddr:
           type: string
           example: 127.0.0.1:9092
-        name:
+        topic:
           type: string
           example: metric_1_topic
         metric:
           type: string
           example: metric_1_name
-        type:
-          type: string
-          example: infrastructure/application
     publishtopic:
       required:
       - brokerAddr
       - kpi
-      - name
+      - topic
       type: object
       properties:
         brokerAddr:
           type: string
           example: 127.0.0.1:9092
-        name:
+        topic:
           type: string
           example: output_kpi_1_topic
         kpi:
