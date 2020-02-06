@@ -38,7 +38,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/configuration'
+                $ref: '#/components/schemas/configurationDict'
     post:
       tags:
       - developers
@@ -60,7 +60,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/configuration'
+              $ref: '#/components/schemas/configurationDict'
         required: true
       responses:
         "200":
@@ -68,7 +68,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/configuration'
+                $ref: '#/components/schemas/configurationResp'
         "400":
           description: malformed JSON content
         "401":
@@ -165,6 +165,34 @@ paths:
                 $ref: '#/components/schemas/commandResponse'
 components:
   schemas:
+    configurationDict:
+      required:
+      - configuration
+      - expID
+      - tcID
+      type: object
+      properties:
+        expID:
+          type: string
+          example: ea0b4e14-8b54-4a7d-8635-8e0dacad334b
+        tcID:
+          type: string
+          example: 5e28a691-2a58-432f-a730-0fc98a9e75b8
+        configuration:
+          $ref: '#/components/schemas/configuration'
+    configurationResp:
+      type: object
+      properties:
+        experiment found:
+          type: boolean
+          example: true
+        status:
+          type: string
+          example: running
+        instances list:
+          type: array
+          items:
+            $ref: '#/components/schemas/configurationDict'
     configuration:
       required:
       - publish
@@ -229,13 +257,17 @@ components:
         steps:
           type: number
           example: 2
+        added:
+          type: string
+          example: 02/06/2020, 04:22:36
+        finished:
+          type: string
+          example: 02/06/2020, 04:23:47
         status:
           type: string
           example: finished
         validation:
-          type: array
-          items:
-            $ref: '#/components/schemas/validationResults'
+          $ref: '#/components/schemas/validationResults'
     validationResults:
       type: object
       additionalProperties: true
