@@ -150,10 +150,14 @@ components:
     configurationDict:
       type: object
       required:
+        - vertical
         - expID
         - tcID
         - configuration
       properties:
+        vertical:
+          type: string
+          example: "Smart Transportation"
         expID:
           type: string
           example: "ea0b4e14-8b54-4a7d-8635-8e0dacad334b"
