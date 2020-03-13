@@ -246,19 +246,28 @@ paths:
                 $ref: '#/components/schemas/commandResponse'
         "404":
           description: FAIL
-  /step/{expID}:
+  /step/{expID}/{tcID}:
     get:
       tags:
       - developers
       summary: add step to experiment
       description: |
-        Adds additional step to experiment
-      operationId: addStepToExp
+        Adds additional step to experiment's testcase
+      operationId: addStepToExpTc
       parameters:
       - name: expID
         in: path
         description: |
           Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tcID
+        in: path
+        description: |
+          Identifier of testcase
         required: true
         style: simple
         explode: false
