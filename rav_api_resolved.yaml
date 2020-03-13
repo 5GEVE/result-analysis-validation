@@ -64,15 +64,15 @@ paths:
         required: true
       responses:
         "200":
-          description: configuration received
+          description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/configurationResp'
         "400":
-          description: malformed JSON content
-        "401":
-          description: unsupported request
+          description: Malformed JSON content
+        "409":
+          description: Conflict
   /queue:
     get:
       tags:
@@ -113,6 +113,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/validationResultsInstance'
+  /queue/{expID}/{tcID}:
+    get:
+      tags:
+      - developers
+      summary: dump results for specific testcase
+      description: |
+        Returns the results of the specific testcase
+      operationId: getTcResults
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tcID
+        in: path
+        description: |
+          Identifier of testcase
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validationTestcaseResultsInstance'
+        "404":
+          description: FAIL
   /terminate/{expID}:
     get:
       tags:
@@ -138,6 +174,78 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/commandResponse'
+  /terminate/{expID}/{tcID}:
+    get:
+      tags:
+      - developers
+      summary: terminate current testcase of experiment
+      description: |
+        Terminates the current testcase of the experiment
+      operationId: terminateCurrentTestcase
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tcID
+        in: path
+        description: |
+          Identifier of testcase
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commandResponse'
+        "404":
+          description: FAIL
+  /validate/{expID}/{tcID}:
+    post:
+      tags:
+      - developers
+      summary: start testcase validation
+      description: |
+        Start the validation of the requests testcase
+      operationId: startTestcaseValidation
+      parameters:
+      - name: expID
+        in: path
+        description: |
+          Identifier of experiment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tcID
+        in: path
+        description: |
+          Identifier of testcase
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commandResponse'
+        "404":
+          description: FAIL
   /step/{expID}:
     get:
       tags:
@@ -167,9 +275,8 @@ components:
   schemas:
     configurationDict:
       required:
-      - configuration
       - expID
-      - tcID
+      - testcases
       - vertical
       type: object
       properties:
@@ -179,21 +286,20 @@ components:
         expID:
           type: string
           example: ea0b4e14-8b54-4a7d-8635-8e0dacad334b
-        tcID:
-          type: string
-          example: 5e28a691-2a58-432f-a730-0fc98a9e75b8
-        configuration:
-          $ref: '#/components/schemas/configuration'
+        testcases:
+          type: array
+          items:
+            $ref: '#/components/schemas/configurationDict_testcases'
     configurationResp:
       type: object
       properties:
-        experiment found:
+        experiment_found:
           type: boolean
           example: true
         status:
           type: string
           example: running
-        instances list:
+        instances_list:
           type: array
           items:
             $ref: '#/components/schemas/configurationDict'
@@ -253,9 +359,30 @@ components:
         expID:
           type: string
           example: 123af1rcxhauq13-13r142f1-13f13f-121e
+        testcases:
+          type: array
+          items:
+            $ref: '#/components/schemas/configurationDict_testcases'
+        steps:
+          type: number
+          example: 2
+        added:
+          type: string
+          example: 02/06/2020, 04:22:36
+        finished:
+          type: string
+          example: 02/06/2020, 04:23:47
+        status:
+          type: string
+          example: finished
+        validation:
+          $ref: '#/components/schemas/validationResults'
+    validationTestcaseResultsInstance:
+      type: object
+      properties:
         tcID:
           type: string
-          example: effect of latency on deviation
+          example: 5e28a691-2a58-432f-a730-0fc98a9e75b8
         configuration:
           $ref: '#/components/schemas/configuration'
         steps:
@@ -281,6 +408,17 @@ components:
         expID:
           type: string
           example: 123af1rcxhauq13-13r142f1-13f13f-121e
+        tcID:
+          type: string
+          example: 141af25ae25131b-13a112af-bcf259-f619
         status:
           type: string
           example: running
+    configurationDict_testcases:
+      type: object
+      properties:
+        tcID:
+          type: string
+          example: 5e28a691-2a58-432f-a730-0fc98a9e75b8
+        configuration:
+          $ref: '#/components/schemas/configuration'

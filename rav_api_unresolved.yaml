@@ -29,15 +29,15 @@ paths:
       description: Sets a new configuration on the RAV module
       responses:
         '200':
-          description: configuration received
+          description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/configurationResp'
         '400':
-          description: malformed JSON content
-        '401':
-          description: unsupported request
+          description: Malformed JSON content
+        '409':
+          description: Conflict
       requestBody:
         required: true
         content:
@@ -97,6 +97,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/validationResultsInstance'
+  /queue/{expID}/{tcID}:
+    parameters:
+      - name: "expID"
+        description: >
+          Identifier of experiment
+        in: "path"
+        schema:
+          type: string
+        required: true
+      - name: "tcID"
+        description: >
+          Identifier of testcase
+        in: "path"
+        schema:
+          type: string
+        required: true
+    get:
+      tags:
+        - developers
+      summary: dump results for specific testcase
+      operationId: getTcResults
+      description: |
+        Returns the results of the specific testcase
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validationTestcaseResultsInstance'
+        '404':
+          description: FAIL
   /terminate/{expID}:
     parameters:
       - name: "expID"
@@ -120,6 +152,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/commandResponse'
+  /terminate/{expID}/{tcID}:
+    parameters:
+      - name: "expID"
+        description: >
+          Identifier of experiment
+        in: "path"
+        schema:
+          type: string
+        required: true
+      - name: "tcID"
+        description: >
+          Identifier of testcase
+        in: "path"
+        schema:
+          type: string
+        required: true
+    get:
+      tags:
+        - developers
+      summary: terminate current testcase of experiment
+      operationId: terminateCurrentTestcase
+      description: |
+        Terminates the current testcase of the experiment
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commandResponse'
+        '404':
+          description: FAIL
+  /validate/{expID}/{tcID}:
+    parameters:
+    - name: "expID"
+      description: >
+        Identifier of experiment
+      in: "path"
+      schema:
+        type: string
+      required: true
+    - name: "tcID"
+      description: >
+        Identifier of testcase
+      in: "path"
+      schema:
+        type: string
+      required: true
+    post:
+      tags:
+        - developers
+      summary: start testcase validation
+      operationId: startTestcaseValidation
+      description: |
+        Start the validation of the requests testcase
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/commandResponse'
+        '404':
+          description: FAIL
   /step/{expID}:
     parameters:
     - name: "expID"
@@ -152,8 +248,7 @@ components:
       required:
         - vertical
         - expID
-        - tcID
-        - configuration
+        - testcases
       properties:
         vertical:
           type: string
@@ -161,21 +256,26 @@ components:
         expID:
           type: string
           example: "ea0b4e14-8b54-4a7d-8635-8e0dacad334b"
-        tcID:
-          type: string
-          example: "5e28a691-2a58-432f-a730-0fc98a9e75b8"
-        configuration:
-          $ref: '#/components/schemas/configuration'
+        testcases:
+          type: array
+          items:
+            type: object
+            properties:
+              tcID:
+                type: string
+                example: "5e28a691-2a58-432f-a730-0fc98a9e75b8"
+              configuration:
+                $ref: '#/components/schemas/configuration'        
     configurationResp:
       type: object
       properties:
-        experiment found:
+        experiment_found:
           type: boolean
           example: true
         status:
           type: string
           example: "running"
-        instances list:
+        instances_list:
           type: array
           items:
             $ref: '#/components/schemas/configurationDict'
@@ -235,11 +335,38 @@ components:
         expID:
           type: string
           example: '123af1rcxhauq13-13r142f1-13f13f-121e'
+        testcases:
+          type: array
+          items:
+            type: object
+            properties:
+              tcID:
+                type: string
+                example: "5e28a691-2a58-432f-a730-0fc98a9e75b8"
+              configuration:
+                $ref: '#/components/schemas/configuration' 
+        steps:
+          type: number
+          example: 2
+        added:
+          type: string
+          example: "02/06/2020, 04:22:36"
+        finished:
+          type: string
+          example: "02/06/2020, 04:23:47"
+        status:
+          type: string
+          example: 'finished'
+        validation:
+          $ref: '#/components/schemas/validationResults'
+    validationTestcaseResultsInstance:
+      type: object
+      properties:
         tcID:
           type: string
-          example: 'effect of latency on deviation'
+          example: "5e28a691-2a58-432f-a730-0fc98a9e75b8"
         configuration:
-          $ref: '#/components/schemas/configuration'
+          $ref: '#/components/schemas/configuration' 
         steps:
           type: number
           example: 2
@@ -263,6 +390,9 @@ components:
         expID: 
           type: string
           example: '123af1rcxhauq13-13r142f1-13f13f-121e'
+        tcID:
+          type: string
+          example: '141af25ae25131b-13a112af-bcf259-f619'
         status:
           type: string
           example: 'running'
