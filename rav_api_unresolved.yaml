@@ -200,7 +200,7 @@ paths:
       schema:
         type: string
       required: true
-    post:
+    get:
       tags:
         - developers
       summary: start testcase validation

@@ -211,7 +211,7 @@ paths:
         "404":
           description: FAIL
   /validate/{expID}/{tcID}:
-    post:
+    get:
       tags:
       - developers
       summary: start testcase validation
