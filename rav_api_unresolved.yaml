@@ -225,7 +225,7 @@ paths:
       schema:
         type: string
       required: true
-    get:
+    delete:
       tags:
         - developers
       summary: remove a finished experiment

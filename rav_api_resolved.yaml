@@ -247,7 +247,7 @@ paths:
         "404":
           description: FAIL
   /remove/{expID}:
-    get:
+    delete:
       tags:
       - developers
       summary: remove a finished experiment
