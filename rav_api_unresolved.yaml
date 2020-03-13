@@ -141,10 +141,10 @@ paths:
     get:
       tags:
         - developers
-      summary: terminate current step of experiment
-      operationId: terminateCurrentStep
+      summary: terminate the experiment
+      operationId: terminateExperiment
       description: |
-        Terminates the current step of the experiment
+        Terminates the experiment
       responses:
         '200':
           description: SUCCESS
@@ -350,9 +350,6 @@ components:
                 example: "5e28a691-2a58-432f-a730-0fc98a9e75b8"
               configuration:
                 $ref: '#/components/schemas/configuration' 
-        steps:
-          type: number
-          example: 2
         added:
           type: string
           example: "02/06/2020, 04:22:36"
@@ -372,9 +369,6 @@ components:
           example: "5e28a691-2a58-432f-a730-0fc98a9e75b8"
         configuration:
           $ref: '#/components/schemas/configuration' 
-        steps:
-          type: number
-          example: 2
         added:
           type: string
           example: "02/06/2020, 04:22:36"
