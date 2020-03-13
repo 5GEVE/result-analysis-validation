@@ -173,7 +173,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/commandResponse'
+                $ref: '#/components/schemas/controlResponse'
   /terminate/{expID}/{tcID}:
     get:
       tags:
@@ -246,28 +246,19 @@ paths:
                 $ref: '#/components/schemas/commandResponse'
         "404":
           description: FAIL
-  /step/{expID}/{tcID}:
+  /remove/{expID}:
     get:
       tags:
       - developers
-      summary: add step to experiment
+      summary: remove a finished experiment
       description: |
-        Adds additional step to experiment's testcase
-      operationId: addStepToExpTc
+        Remove an experiment instance that has finished
+      operationId: removeExperiment
       parameters:
       - name: expID
         in: path
         description: |
           Identifier of experiment
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      - name: tcID
-        in: path
-        description: |
-          Identifier of testcase
         required: true
         style: simple
         explode: false
@@ -279,7 +270,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/commandResponse'
+                $ref: '#/components/schemas/controlResponse'
+        "404":
+          description: NOT FOUND
+        "409":
+          description: NOT FINISHED
 components:
   schemas:
     configurationDict:
@@ -420,6 +415,15 @@ components:
         tcID:
           type: string
           example: 141af25ae25131b-13a112af-bcf259-f619
+        status:
+          type: string
+          example: running
+    controlResponse:
+      type: object
+      properties:
+        expID:
+          type: string
+          example: 123af1rcxhauq13-13r142f1-13f13f-121e
         status:
           type: string
           example: running
