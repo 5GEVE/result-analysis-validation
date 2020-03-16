@@ -129,6 +129,8 @@ paths:
                 $ref: '#/components/schemas/validationTestcaseResultsInstance'
         '404':
           description: FAIL
+        '409':
+          description: NOT FINISHED
   /terminate/{expID}:
     parameters:
       - name: "expID"
@@ -214,6 +216,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/commandResponse'
+        '404':
+          description: FAIL
+  /status/{expID}/{tcID}:
+    parameters:
+    - name: "expID"
+      description: >
+        Identifier of experiment
+      in: "path"
+      schema:
+        type: string
+      required: true
+    - name: "tcID"
+      description: >
+        Identifier of testcase
+      in: "path"
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+        - developers
+      summary: show validation status
+      operationId: showTestcaseValidationStatus
+      description: |
+        Show the status of the validation
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/statusResponse'
         '404':
           description: FAIL
   /remove/{expID}:
@@ -395,6 +429,15 @@ components:
         status:
           type: string
           example: 'running'
+    statusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'VALIDATING'
+        report:
+          type: string
+          example: '{IP}:{PORT}/{vertical}/{expID}'
     controlResponse:
       type: object
       properties:
