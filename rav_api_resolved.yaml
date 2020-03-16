@@ -458,7 +458,7 @@ components:
           example: VALIDATING
         report:
           type: string
-          example: '{IP}:{PORT}/{vertical}/{expID}'
+          example: /{vertical}/{expID}
     controlResponse:
       type: object
       properties:
