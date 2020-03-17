@@ -371,6 +371,9 @@ components:
     validationResultsInstance:
       type: object
       properties:
+        vertical:
+          type: string
+          example: 'Smart Transportation'
         expID:
           type: string
           example: '123af1rcxhauq13-13r142f1-13f13f-121e'
