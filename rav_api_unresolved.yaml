@@ -59,6 +59,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/configurationDict'
+        '404':
+          description: NOT FOUND
   /queue:
     get:
       tags:
@@ -97,6 +99,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/validationResultsInstance'
+        '404':
+          description: NOT FOUND
   /queue/{expID}/{tcID}:
     parameters:
       - name: "expID"
@@ -129,8 +133,6 @@ paths:
                 $ref: '#/components/schemas/validationTestcaseResultsInstance'
         '404':
           description: FAIL
-        '409':
-          description: NOT FINISHED
   /terminate/{expID}:
     parameters:
       - name: "expID"
@@ -154,6 +156,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/controlResponse'
+        '404':
+          description: NOT FOUND
   /terminate/{expID}/{tcID}:
     parameters:
       - name: "expID"
