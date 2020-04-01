@@ -358,6 +358,12 @@ components:
         - brokerAddr
         - topic
         - kpi
+        - unit
+        - input
+        - formula
+        - interval
+        - lowerBound
+        - upperBound
       properties:
         brokerAddr:
           type: string
@@ -368,6 +374,30 @@ components:
         kpi:
           type: string
           example: output_kpi_1_name
+        unit: 
+          type: string
+          example: '%'
+        input:
+          type: array
+          items:
+            type: string
+            example: 'metricId1'
+        formula:
+          type: string
+          example: 'latency + decision_time'
+        interval:
+          type: number
+          example: 1
+        lowerBound: 
+          oneOf:
+            - type: string
+            - type: number
+          example: 1
+        upperBound: 
+          oneOf:
+            - type: string
+            - type: number
+          example: 10
     validationResultsList:
       type: array
       items:
