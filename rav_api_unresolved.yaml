@@ -133,6 +133,23 @@ paths:
                 $ref: '#/components/schemas/validationTestcaseResultsInstance'
         '404':
           description: FAIL
+  /messages:
+    get:
+      tags: 
+        - developers
+      summary: dump the consumed messages per experiment and topic
+      operationId: dumpMessages
+      description: |
+        Returns the messages consumed in all topic for all experiments
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/messagesDict'
+        '404':
+          description: FAIL
   /terminate/{expID}:
     parameters:
       - name: "expID"
@@ -286,6 +303,19 @@ servers:
   - url: 'https://virtserver.swaggerhub.com/myRAVorg/RAV_latest/1.0.0'
 components:
   schemas:
+    messagesDict:
+      type: object
+      properties:
+        exampleExpId1:
+          type: object
+          properties:
+            exampleTopicName:
+              type: array
+              items: 
+                oneOf:
+                - type: string
+                - type: number
+              example: ['exampleMessage1', 'exampleMessage2']
     configurationDict:
       type: object
       required:

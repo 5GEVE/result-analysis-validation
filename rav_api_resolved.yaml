@@ -153,6 +153,23 @@ paths:
                 $ref: '#/components/schemas/validationTestcaseResultsInstance'
         "404":
           description: FAIL
+  /messages:
+    get:
+      tags:
+      - developers
+      summary: dump the consumed messages per experiment and topic
+      description: |
+        Returns the messages consumed in all topic for all experiments
+      operationId: dumpMessages
+      responses:
+        "200":
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/messagesDict'
+        "404":
+          description: FAIL
   /terminate/{expID}:
     get:
       tags:
@@ -319,6 +336,11 @@ paths:
           description: NOT FINISHED
 components:
   schemas:
+    messagesDict:
+      type: object
+      properties:
+        exampleExpId1:
+          $ref: '#/components/schemas/messagesDict_exampleExpId1'
     configurationDict:
       required:
       - expID
@@ -505,6 +527,18 @@ components:
         status:
           type: string
           example: running
+    messagesDict_exampleExpId1:
+      type: object
+      properties:
+        exampleTopicName:
+          type: array
+          example:
+          - exampleMessage1
+          - exampleMessage2
+          items:
+            oneOf:
+            - type: string
+            - type: number
     configurationDict_testcases:
       type: object
       properties:
