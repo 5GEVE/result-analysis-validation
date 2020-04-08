@@ -269,6 +269,8 @@ paths:
                 $ref: '#/components/schemas/commandResponse'
         "404":
           description: FAIL
+        "500":
+          description: BROKER NOT FOUND
   /status/{expID}/{tcID}:
     get:
       tags:
