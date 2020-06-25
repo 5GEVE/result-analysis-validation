@@ -323,6 +323,7 @@ components:
       required:
         - vertical
         - expID
+        - executeID
         - testcases
       properties:
         vertical:
@@ -331,6 +332,9 @@ components:
         expID:
           type: string
           example: "ea0b4e14-8b54-4a7d-8635-8e0dacad334b"
+        executeID:
+          type: string
+          example: "38ab48eb-0867-4bc7-abfd-6642936f07ad"
         testcases:
           type: array
           items:
