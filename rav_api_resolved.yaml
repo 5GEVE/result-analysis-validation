@@ -14,7 +14,7 @@ tags:
 - name: developers
   description: Operations available to regular developers
 paths:
-  /configuration/{expID}:
+  /configuration/{executeID}:
     get:
       tags:
       - developers
@@ -23,7 +23,7 @@ paths:
         Returns the current configuration of the RAV module
       operationId: getConfigurationExp
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -48,7 +48,7 @@ paths:
       description: Sets a new configuration on the RAV module
       operationId: setConfigurationExp
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -90,7 +90,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/validationResultsList'
-  /queue/{expID}:
+  /queue/{executeID}:
     get:
       tags:
       - developers
@@ -99,7 +99,7 @@ paths:
         Returns the results of the specific experiment
       operationId: getExpResults
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -117,7 +117,7 @@ paths:
                 $ref: '#/components/schemas/validationResultsInstance'
         "404":
           description: NOT FOUND
-  /queue/{expID}/{tcID}:
+  /queue/{executeID}/{tcID}:
     get:
       tags:
       - developers
@@ -126,7 +126,7 @@ paths:
         Returns the results of the specific testcase
       operationId: getTcResults
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -170,7 +170,7 @@ paths:
                 $ref: '#/components/schemas/messagesDict'
         "404":
           description: FAIL
-  /terminate/{expID}:
+  /terminate/{executeID}:
     get:
       tags:
       - developers
@@ -179,7 +179,7 @@ paths:
         Terminates the experiment
       operationId: terminateExperiment
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -197,7 +197,7 @@ paths:
                 $ref: '#/components/schemas/controlResponse'
         "404":
           description: NOT FOUND
-  /terminate/{expID}/{tcID}:
+  /terminate/{executeID}/{tcID}:
     get:
       tags:
       - developers
@@ -206,7 +206,7 @@ paths:
         Terminates the current testcase of the experiment
       operationId: terminateCurrentTestcase
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -233,7 +233,7 @@ paths:
                 $ref: '#/components/schemas/commandResponse'
         "404":
           description: FAIL
-  /validate/{expID}/{tcID}:
+  /validate/{executeID}/{tcID}:
     get:
       tags:
       - developers
@@ -242,7 +242,7 @@ paths:
         Start the validation of the requests testcase
       operationId: startTestcaseValidation
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -271,7 +271,7 @@ paths:
           description: FAIL
         "500":
           description: BROKER NOT FOUND
-  /status/{expID}/{tcID}:
+  /status/{executeID}/{tcID}:
     get:
       tags:
       - developers
@@ -280,7 +280,7 @@ paths:
         Show the status of the validation
       operationId: showTestcaseValidationStatus
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -307,7 +307,7 @@ paths:
                 $ref: '#/components/schemas/statusResponse'
         "404":
           description: FAIL
-  /remove/{expID}:
+  /remove/{executeID}:
     delete:
       tags:
       - developers
@@ -316,7 +316,7 @@ paths:
         Remove an experiment instance that has finished
       operationId: removeExperiment
       parameters:
-      - name: expID
+      - name: executeID
         in: path
         description: |
           Identifier of experiment
@@ -466,6 +466,9 @@ components:
         expID:
           type: string
           example: 123af1rcxhauq13-13r142f1-13f13f-121e
+        executionID:
+          type: string
+          example: 123af1rcxhauq13-13r142f1-13f13f-121e
         testcases:
           type: array
           items:
@@ -509,6 +512,9 @@ components:
         expID:
           type: string
           example: 123af1rcxhauq13-13r142f1-13f13f-121e
+        executeID:
+          type: string
+          example: 899ad5f1-d161-4358-86fa-40e48ae15dff
         tcID:
           type: string
           example: 141af25ae25131b-13a112af-bcf259-f619
@@ -523,17 +529,20 @@ components:
           example: VALIDATING
         report:
           type: string
-          example: /{vertical}/{expID}
+          example: /{vertical}/{expID}/{executeID}
     controlResponse:
       type: object
       properties:
         expID:
           type: string
           example: 123af1rcxhauq13-13r142f1-13f13f-121e
+        executeID:
+          type: string
+          example: 6f47c9fa-3c7e-4187-a1b4-de0f1f349849
         status:
           type: string
           example: running
-    messagesDict_exampleExpId1:
+    messagesDict_exampleExpId1_exampleExecutId1:
       type: object
       properties:
         exampleTopicName:
@@ -545,6 +554,11 @@ components:
             oneOf:
             - type: string
             - type: number
+    messagesDict_exampleExpId1:
+      type: object
+      properties:
+        exampleExecutId1:
+          $ref: '#/components/schemas/messagesDict_exampleExpId1_exampleExecutId1'
     configurationDict_testcases:
       type: object
       properties:

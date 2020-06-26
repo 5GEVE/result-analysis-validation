@@ -12,9 +12,9 @@ tags:
   - name: developers
     description: Operations available to regular developers
 paths:
-  /configuration/{expID}:
+  /configuration/{executeID}:
     parameters:
-      - name: "expID"
+      - name: "executeID"
         description: >
           Identifier of experiment
         in: "path"
@@ -76,9 +76,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/validationResultsList'
-  /queue/{expID}:
+  /queue/{executeID}:
     parameters:
-      - name: "expID"
+      - name: "executeID"
         description: >
           Identifier of experiment
         in: "path"
@@ -101,9 +101,9 @@ paths:
                 $ref: '#/components/schemas/validationResultsInstance'
         '404':
           description: NOT FOUND
-  /queue/{expID}/{tcID}:
+  /queue/{executeID}/{tcID}:
     parameters:
-      - name: "expID"
+      - name: "executeID"
         description: >
           Identifier of experiment
         in: "path"
@@ -150,9 +150,9 @@ paths:
                 $ref: '#/components/schemas/messagesDict'
         '404':
           description: FAIL
-  /terminate/{expID}:
+  /terminate/{executeID}:
     parameters:
-      - name: "expID"
+      - name: "executeID"
         description: >
           Identifier of experiment
         in: "path"
@@ -175,9 +175,9 @@ paths:
                 $ref: '#/components/schemas/controlResponse'
         '404':
           description: NOT FOUND
-  /terminate/{expID}/{tcID}:
+  /terminate/{executeID}/{tcID}:
     parameters:
-      - name: "expID"
+      - name: "executeID"
         description: >
           Identifier of experiment
         in: "path"
@@ -207,9 +207,9 @@ paths:
                 $ref: '#/components/schemas/commandResponse'
         '404':
           description: FAIL
-  /validate/{expID}/{tcID}:
+  /validate/{executeID}/{tcID}:
     parameters:
-    - name: "expID"
+    - name: "executeID"
       description: >
         Identifier of experiment
       in: "path"
@@ -241,9 +241,9 @@ paths:
           description: FAIL
         '500':
           description: BROKER NOT FOUND
-  /status/{expID}/{tcID}:
+  /status/{executeID}/{tcID}:
     parameters:
-    - name: "expID"
+    - name: "executeID"
       description: >
         Identifier of experiment
       in: "path"
@@ -273,9 +273,9 @@ paths:
                 $ref: '#/components/schemas/statusResponse'
         '404':
           description: FAIL
-  /remove/{expID}:
+  /remove/{executeID}:
     parameters: 
-    - name: "expID"
+    - name: "executeID"
       description: >
         Identifier of experiment
       in: "path"
@@ -311,13 +311,16 @@ components:
         exampleExpId1:
           type: object
           properties:
-            exampleTopicName:
-              type: array
-              items: 
-                oneOf:
-                - type: string
-                - type: number
-              example: ['exampleMessage1', 'exampleMessage2']
+            exampleExecutId1:
+              type: object
+              properties:
+                exampleTopicName:
+                  type: array
+                  items: 
+                    oneOf:
+                    - type: string
+                    - type: number
+                  example: ['exampleMessage1', 'exampleMessage2']
     configurationDict:
       type: object
       required:
@@ -447,6 +450,9 @@ components:
         expID:
           type: string
           example: '123af1rcxhauq13-13r142f1-13f13f-121e'
+        executionID:
+          type: string
+          example: '123af1rcxhauq13-13r142f1-13f13f-121e'
         testcases:
           type: array
           items:
@@ -496,6 +502,9 @@ components:
         expID: 
           type: string
           example: '123af1rcxhauq13-13r142f1-13f13f-121e'
+        executeID: 
+          type: string
+          example: '899ad5f1-d161-4358-86fa-40e48ae15dff'
         tcID:
           type: string
           example: '141af25ae25131b-13a112af-bcf259-f619'
@@ -510,13 +519,16 @@ components:
           example: 'VALIDATING'
         report:
           type: string
-          example: '/{vertical}/{expID}'
+          example: '/{vertical}/{expID}/{executeID}'
     controlResponse:
       type: object
       properties:
         expID: 
           type: string
           example: '123af1rcxhauq13-13r142f1-13f13f-121e'
+        executeID: 
+          type: string
+          example: '6f47c9fa-3c7e-4187-a1b4-de0f1f349849'
         status:
           type: string
           example: 'running'
